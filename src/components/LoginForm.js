@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Card, CardSection, Input, Button } from './common';
-import { emailChanged, passwordChanged } from '../actions';
+import { View, Text } from 'react-native';
+import { Card, CardSection, Input, Button, Spinner } from './common';
+import { emailChanged, passwordChanged, loginUser } from '../actions';
 
 class LoginForm extends Component {
     onEmailChange(text) {
@@ -12,6 +13,38 @@ class LoginForm extends Component {
         this.props.passwordChanged(password);
     }
 
+    onButtonPress() {
+        const { email, password } = this.props;
+
+        this.props.loginUser({ email, password });
+    }
+
+    renderError() {
+        console.log(this.props.error);
+
+        if (this.props.error) {
+            return (
+                <View style={{ backgroundColor: 'white' }}>
+                    <Text style={styles.errorTextStyle}>
+                        {this.props.error}
+                    </Text>
+                </View>
+            );
+        }
+    }
+
+    renderButton() {
+        if (this.props.loading) {
+            return <Spinner size="large" />;
+        }
+
+        return (
+            <Button onPress={this.onButtonPress.bind(this)}>
+                Log In
+            </Button>
+        );
+    }
+    
     render() {
         return (
             <Card>
@@ -34,23 +67,33 @@ class LoginForm extends Component {
                     />
                 </CardSection>
 
+                {this.renderError()}
+
                 <CardSection>
-                    <Button>
-                        Log In
-                    </Button>
+                    {this.renderButton()}
                 </CardSection>
             </Card>
         );
     }
 }
 
+const styles = {
+    errorTextStyle: {
+        fontSize: 20,
+        alignSelf: 'center',
+        color: 'red'
+    }
+};
+
 const mapStateToProps = (state) => {
-    const { email, password } = state.auth;
+    const { email, password, error, loading } = state.auth;
 
     return {
         email,
-        password
+        password,
+        error,
+        loading
     };
 };
 
-export default connect(mapStateToProps, { emailChanged, passwordChanged })(LoginForm);
+export default connect(mapStateToProps, { emailChanged, passwordChanged, loginUser })(LoginForm);
