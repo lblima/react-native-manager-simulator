@@ -41,10 +41,7 @@ class EmployeeList extends Component {
         return <Text>loading...</Text>;
     }
 
-    render() {
-        console.log(this.props);
-        console.log(this.dataSource);
-        
+    render() {        
         return (
             <View>
                 {this.renderListView()}
