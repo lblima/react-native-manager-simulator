@@ -22,6 +22,18 @@ class App extends Component {
         };
 
         firebase.initializeApp(config);
+
+        this.state = { loggedIn: false };
+    }
+
+    componentDidMount() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log('logged');
+            } else {
+                console.log('not logged');
+            }
+      });
     }
 
     render() {
